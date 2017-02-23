@@ -48,6 +48,21 @@
                                                class="form-control" placeholder="อีเมลล์">
                                     </div>
                                 </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">สาขาวิชา</label>
+
+                                    <div class="col-sm-10">
+                                        <select name="user[branch_id]" class="form-control">
+                                            <option>กรุณาเลือก</option>
+                                            @foreach($branches as $branch)
+                                                <option
+                                                        {{$branch->id == $user->branch_id ? 'selected':''}}
+                                                        value="{{$branch->id}}">{{$branch->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">รหัสผ่าน</label>
 

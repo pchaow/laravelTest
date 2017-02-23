@@ -5,13 +5,8 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                User Management
-                <small>User</small>
+                Branch Management
             </h1>
-            <ol class="breadcrumb">
-                <li><a href="/admin"><i class="fa fa-dashboard"></i> Admin Home</a></li>
-                <li class="active"><a href="/admin/user">User Management</a></li>
-            </ol>
         </section>
 
         <!-- Main content -->
@@ -20,7 +15,7 @@
                 <div class="col-md-12">
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="box-title">Responsive Hover Table</h3>
+                            <h3 class="box-title">Branch Table</h3>
 
                             <div class="box-tools">
                                 <div class="input-group input-group-sm" style="width: 150px;">
@@ -36,26 +31,29 @@
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body table-responsive no-padding">
+                            <a href="/admin/branch/create" class="btn btn-primary">
+                                เพิ่มสาขา
+                            </a>
                             <table class="table table-hover">
                                 <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>ชื่อ - นามสกุล</th>
-                                    <th>อีเมลล์</th>
-                                    <th>สาขา</th>
+                                    <th>ชื่อสาขา</th>
+                                    <th>รายละเอียด</th>
+                                    <th>จำนวนผู้ใช้</th>
                                     <th>การจัดการ</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($users as $user)
+                                @foreach($branches as $branch)
                                     <tr>
-                                        <td>{{$user->id}}</td>
-                                        <td>{{$user->name}}</td>
-                                        <td>{{$user->email}}</td>
-                                        <td>{{$user->branch? $user->branch->name : 'ไม่มี'}}</td>
+                                        <td>{{$branch->id}}</td>
+                                        <td>{{$branch->name}}</td>
+                                        <td>{{$branch->description}}</td>
+                                        <td>{{$branch->users->count()}}</td>
                                         <td>
-                                            <a href="/admin/user/{{$user->id}}/edit" class="btn btn-success">แก้ไข</a>
-                                            <button onclick="deleteUser({{$user->id}})" type="button"
+                                            <a href="/admin/branch/{{$branch->id}}/edit" class="btn btn-success">แก้ไข</a>
+                                            <button onclick="deleteBranch({{$branch->id}})" type="button"
                                                     class="btn btn-danger">ลบ
                                             </button>
                                         </td>
@@ -63,7 +61,7 @@
                                 @endforeach
                                 </tbody>
                             </table>
-                            <form id="deleteUser" method="post">
+                            <form id="deleteBranch" method="post">
                                 {{csrf_field()}}
                             </form>
                         </div>
@@ -79,10 +77,10 @@
 
 @section('javascript')
     <script type="text/javascript">
-      function deleteUser(id) {
-          if(confirm("Do you want to delete this user?")){
-              var form = document.getElementById('deleteUser');
-              form.setAttribute('action',"/admin/user/"+id+"/delete")
+      function deleteBranch(id) {
+          if(confirm("Do you want to delete this branch?")){
+              var form = document.getElementById('deleteBranch');
+              form.setAttribute('action',"/admin/branch/"+id+"/delete")
               form.submit()
           }
       }
