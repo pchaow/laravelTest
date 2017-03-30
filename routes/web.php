@@ -18,13 +18,44 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/logout',function(){
+Route::get('/logout', function () {
     Auth::logout();
     return redirect('/login');
 });
 
 Route::get('/login', function () {
     return view('login');
+});
+
+Route::post('/login_up', function (Request $request) {
+    $username = $request->get('username');
+    $password = $request->get('password');
+
+    $soapController = new \App\Soaps\UPSoapController(new \Artisaninweb\SoapWrapper\SoapWrapper());
+    $result = $soapController->login($username, $password);
+
+    $sid = $result->LoginResult;
+    if ($sid == "") {
+        return redirect('login')
+            ->withErrors([
+                'loginError' => 'Username or Password is invalid.'
+            ]);
+    }
+    $user = \App\User::where('email', "$username@up.ac.th")->first();
+    if (!$user) {
+        /*
+        call another servicce if you want to retrive
+        user's data.
+        */
+        $user = new \App\User();
+        $user->email = "$username@up.ac.th";
+        $user->name = "$username";
+        $user->password = \Hash::make($password);
+        $user->save();
+    }
+    Auth::login($user);
+    return redirect('/admin');
+
 });
 
 Route::post('/login', function (Request $request) {
@@ -40,7 +71,7 @@ Route::post('/login', function (Request $request) {
         //login unsuccessfully
         return redirect('/login')
             ->withErrors([
-                'loginError'=>'Email or Password is invalid.'
+                'loginError' => 'Email or Password is invalid.'
             ]);
     }
 });
